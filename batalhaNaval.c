@@ -12,6 +12,22 @@ void imprimirTabuleiro(int tabuleiro[10][10]) {
     }
 }
 
+// Verifica se é possível colocar o navio no tabuleiro (sem sair dos limites ou sobrepor)
+int podeColocarNavio(int linha, int coluna, int tabuleiro[10][10], char orientacao) {
+    if (orientacao == 'H') {
+        if (coluna + 3 > 10) return 0; // Passaria do limite à direita
+        for (int i = 0; i < 3; i++) {
+            if (tabuleiro[linha][coluna + i] != 0) return 0; // Já tem algo na posição
+        }
+    } else if (orientacao == 'V') {
+        if (linha + 3 > 10) return 0; // Passaria do limite inferior
+        for (int i = 0; i < 3; i++) {
+            if (tabuleiro[linha + i][coluna] != 0) return 0; // Já tem algo na posição
+        }
+    }
+    return 1;
+}
+
 // Coloca um navio horizontalmente no tabuleiro
 void colocarNavioHorizontalmente(int linha1, int coluna1, int *navio1, int tabuleiro[10][10]) {
 	for (int i = 0; i < 3; i++) {
@@ -38,10 +54,19 @@ int main() {
 	int navio2[3] = {3, 3, 3};         // Navio de tamanho 3 (representado por 3 no tabuleiro)
 	int escolhaLinha1, escolhaLinha2, escolhaColuna1, escolhaColuna2; // Variáveis para armazenar a linha e coluna escolhidas pelo jogador
 	escolhaLinha1 = 2, escolhaColuna1 = 4; // Exemplo de escolha de linha e coluna para o primeiro navio
-	escolhaLinha2 = 5, escolhaColuna2 = 6; // Exemplo de escolha de linha e coluna para o segundo navio
+	escolhaLinha2 = 8, escolhaColuna2 = 9; // Exemplo de escolha de linha e coluna para o segundo navio
 
-	colocarNavioHorizontalmente(escolhaLinha1 - 1, escolhaColuna1 - 1, navio1, tabuleiro); // Coloca o primeiro navio no tabuleiro
-	colocarNavioVerticalmente(escolhaLinha2 - 1, escolhaColuna2 - 1, navio2, tabuleiro); // Coloca o segundo navio no tabuleiro
+	if (podeColocarNavio(escolhaLinha1 - 1, escolhaColuna1 - 1, tabuleiro, 'H')) {
+		colocarNavioHorizontalmente(escolhaLinha1 - 1, escolhaColuna1 - 1, navio1, tabuleiro); // Coloca o primeiro navio no tabuleiro
+	} else {
+		printf("Não foi possível colocar o navio 1 na posição escolhida.\n");
+	}
+
+	if (podeColocarNavio(escolhaLinha2 - 1, escolhaColuna2 - 1, tabuleiro, 'V')) {
+		colocarNavioVerticalmente(escolhaLinha2 - 1, escolhaColuna2 - 1, navio2, tabuleiro); // Coloca o segundo navio no tabuleiro
+	} else {
+		printf("Não foi possível colocar o navio 2 na posição escolhida.\n");
+	}
 
 	imprimirTabuleiro(tabuleiro);          // Imprime o tabuleiro após colocar o navio
 }
